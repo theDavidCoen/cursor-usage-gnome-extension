@@ -1,0 +1,8 @@
+{
+  "uuid": "cursor-usage@local",
+  "name": "Cursor Usage",
+  "description": "Shows Cursor plan usage percentage in the top bar. Click for subscription, billing cycle, Usage and API details.",
+  "version": 5,
+  "shell-version": ["49", "50", "51"],
+  "url": "https://github.com/theDavidCoen/cursor-usage-gnome-extension"
+}

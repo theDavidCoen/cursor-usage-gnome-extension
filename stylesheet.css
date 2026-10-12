@@ -1,0 +1,151 @@
+/* Top bar: match battery % — panel foreground, no usage-based tint */
+.cursor-usage-label {
+  font-weight: 600;
+  padding-left: 2px;
+  padding-right: 4px;
+  color: inherit;
+}
+
+.cursor-usage-panel-icon {
+  icon-size: 16px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0 2px 0 0;
+}
+
+/* Info rows: keep normal contrast (override insensitive/inactive look) */
+.popup-menu-item.cursor-usage-row,
+.popup-menu-item.cursor-usage-row:insensitive,
+.popup-menu-item.cursor-usage-row:focus {
+  color: inherit;
+  opacity: 1;
+}
+
+.cursor-usage-menu {
+  padding: 6px 10px 4px 10px;
+  spacing: 8px;
+  min-width: 260px;
+}
+
+.cursor-usage-header {
+  spacing: 8px;
+  padding: 2px 2px 4px 2px;
+}
+
+.cursor-usage-plan-box {
+  spacing: 8px;
+}
+
+.cursor-usage-menu-icon {
+  icon-size: 18px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin: 0;
+}
+
+.cursor-usage-plan {
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+.cursor-usage-status-box {
+  spacing: 6px;
+}
+
+.cursor-usage-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background-color: #33d17a;
+}
+
+.cursor-usage-status-dot-inactive {
+  background-color: #c01c28;
+}
+
+.cursor-usage-status-dot-unknown {
+  background-color: #9a9996;
+}
+
+.cursor-usage-status-text {
+  font-weight: 600;
+  color: #33d17a;
+}
+
+.cursor-usage-status-text-inactive {
+  color: #c01c28;
+}
+
+.cursor-usage-status-text-unknown {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.cursor-usage-bars {
+  spacing: 10px;
+  padding: 4px 2px 6px 2px;
+}
+
+.cursor-usage-bar-block {
+  spacing: 4px;
+}
+
+.cursor-usage-bar-header {
+  spacing: 8px;
+}
+
+.cursor-usage-bar-title {
+  font-weight: 600;
+}
+
+.cursor-usage-bar-pct {
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+
+.cursor-usage-bar-track {
+  height: 8px;
+  border-radius: 99px;
+  background-color: rgba(128, 128, 128, 0.35);
+}
+
+.cursor-usage-bar-fill {
+  height: 8px;
+  border-radius: 99px;
+  background-color: #62a0ea;
+  min-width: 0;
+}
+
+.cursor-usage-bar-fill-high {
+  background-color: #e5a50a;
+}
+
+.cursor-usage-bar-fill-full {
+  background-color: #ed333b;
+}
+
+.cursor-usage-details {
+  spacing: 3px;
+  padding: 2px 2px 4px 2px;
+}
+
+.cursor-usage-detail-row {
+  spacing: 10px;
+}
+
+.cursor-usage-detail-key {
+  opacity: 0.75;
+  min-width: 88px;
+}
+
+.cursor-usage-detail-val {
+  font-feature-settings: "tnum";
+}
+
+.cursor-usage-warn-banner {
+  font-size: 0.9em;
+  color: #ed333b;
+  padding: 2px 2px 4px 2px;
+}

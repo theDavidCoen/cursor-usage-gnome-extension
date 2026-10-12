@@ -1,0 +1,21 @@
+# Local / secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets/
+*.vscdb
+*.vscdb-*
+
+# Editor / OS
+*~
+*.swp
+.DS_Store
+.idea/
+.vscode/
+
+# Accidental helper dumps
+/tmp/
+*.log
+usage-snapshot.json
