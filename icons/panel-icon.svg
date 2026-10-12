@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- Original panel mark (not a third-party trademark): usage ring + tick -->
+  <circle cx="8" cy="8" r="6.25" fill="none" stroke="#ffffff" stroke-width="1.75"/>
+  <path d="M8 3.2 A4.8 4.8 0 0 1 12.4 8" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round"/>
+  <circle cx="8" cy="8" r="1.35" fill="#ffffff"/>
+</svg>

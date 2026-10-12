@@ -19,3 +19,10 @@ secrets/
 /tmp/
 *.log
 usage-snapshot.json
+
+# Packaging / tooling
+venv/
+dist/
+*.shell-extension.zip
+venv311/
+venv311/

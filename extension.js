@@ -14,6 +14,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
+import {fetchUsageSnapshot} from './api.js';
+
 const REFRESH_SECONDS = 300;
 const INDICATOR_NAME = 'Cursor Usage';
 
@@ -99,23 +101,15 @@ function statusKind(status) {
     return 'unknown';
 }
 
-/** Resolve Cursor hexagon mark (icon only, no wordmark) from extension icons/. */
-function resolveCursorLogoGicon(extensionPath, preferPngSize = null) {
-    const candidates = [];
-    if (preferPngSize)
-        candidates.push(['icons', `cursor-logo-${preferPngSize}.png`]);
-    candidates.push(
-        ['icons', 'cursor-logo.svg'],
-        ['icons', 'cursor-logo-32.png'],
-        ['icons', 'cursor-logo-20.png'],
-        ['icons', 'cursor-logo.png'],
-        ['icons', 'cursor-symbolic.svg'],
-    );
-    for (const parts of candidates) {
-        const iconPath = GLib.build_filenamev([extensionPath, ...parts]);
-        if (GLib.file_test(iconPath, GLib.FileTest.EXISTS))
-            return Gio.FileIcon.new(Gio.File.new_for_path(iconPath));
-    }
+/** Original panel/menu mark (no third-party trademark artwork). */
+function resolvePanelIconGicon(extensionPath) {
+    const iconPath = GLib.build_filenamev([
+        extensionPath,
+        'icons',
+        'panel-icon.svg',
+    ]);
+    if (GLib.file_test(iconPath, GLib.FileTest.EXISTS))
+        return Gio.FileIcon.new(Gio.File.new_for_path(iconPath));
     return null;
 }
 
@@ -153,7 +147,7 @@ class InfoSection extends PopupMenu.PopupBaseMenuItem {
             icon_size: 18,
             y_align: Clutter.ActorAlign.CENTER,
         });
-        const menuGicon = resolveCursorLogoGicon(extension.path, 20);
+        const menuGicon = resolvePanelIconGicon(extension.path);
         if (menuGicon)
             this._planIcon.gicon = menuGicon;
         else
@@ -412,7 +406,7 @@ class CursorUsageIndicator extends PanelMenu.Button {
         });
         this.menu.addMenuItem(openItem);
 
-        this.menu.connect('open-state-changed', (_menu, isOpen) => {
+        this._menuOpenId = this.menu.connect('open-state-changed', (_menu, isOpen) => {
             if (isOpen)
                 this._refresh();
         });
@@ -421,22 +415,13 @@ class CursorUsageIndicator extends PanelMenu.Button {
     }
 
     _setCursorIcon() {
-        // Hexagon mark only (no wordmark), left of the usage %.
-        const gicon = resolveCursorLogoGicon(this._extension.path, 32);
+        const gicon = resolvePanelIconGicon(this._extension.path);
         if (gicon) {
             this._icon.gicon = gicon;
             this._icon.icon_size = 16;
             return;
         }
         this._icon.icon_name = 'utilities-system-monitor-symbolic';
-    }
-
-    _helperPath() {
-        return GLib.build_filenamev([
-            this._extension.path,
-            'bin',
-            'fetch-cursor-usage.py',
-        ]);
     }
 
     _scheduleRefresh(immediate = false) {
@@ -464,14 +449,8 @@ class CursorUsageIndicator extends PanelMenu.Button {
         const cancellable = new Gio.Cancellable();
         this._fetchCancellable = cancellable;
 
-        const helper = this._helperPath();
-        if (!GLib.file_test(helper, GLib.FileTest.EXISTS)) {
-            this._applyError(_('Helper script missing'));
-            return;
-        }
-
         try {
-            const data = await this._runHelper(helper, cancellable);
+            const data = await fetchUsageSnapshot(cancellable);
             if (cancellable.is_cancelled())
                 return;
             this._applyData(data);
@@ -483,39 +462,6 @@ class CursorUsageIndicator extends PanelMenu.Button {
             if (this._fetchCancellable === cancellable)
                 this._fetchCancellable = null;
         }
-    }
-
-    _runHelper(helper, cancellable) {
-        return new Promise((resolve, reject) => {
-            let proc;
-            try {
-                proc = Gio.Subprocess.new(
-                    ['python3', helper],
-                    Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
-                );
-            } catch (e) {
-                reject(e);
-                return;
-            }
-
-            proc.communicate_utf8_async(null, cancellable, (source, result) => {
-                try {
-                    const [, stdout, stderr] = source.communicate_utf8_finish(result);
-                    if (!source.get_successful() && !stdout) {
-                        reject(new Error(stderr?.trim() || _('Failed to fetch usage')));
-                        return;
-                    }
-                    const text = (stdout || '').trim();
-                    if (!text) {
-                        reject(new Error(stderr?.trim() || _('Empty response from helper')));
-                        return;
-                    }
-                    resolve(JSON.parse(text));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
     }
 
     _applyError(message) {
@@ -541,6 +487,10 @@ class CursorUsageIndicator extends PanelMenu.Button {
             GLib.source_remove(this._refreshId);
             this._refreshId = 0;
         }
+        if (this._menuOpenId) {
+            this.menu.disconnect(this._menuOpenId);
+            this._menuOpenId = 0;
+        }
         if (this._fetchCancellable) {
             this._fetchCancellable.cancel();
             this._fetchCancellable = null;
@@ -553,7 +503,6 @@ export default class CursorUsageExtension extends Extension {
     enable() {
         this._indicator = new CursorUsageIndicator(this);
         Main.panel.addToStatusArea(this.uuid, this._indicator, 1, 'right');
-        log('Cursor Usage: panel indicator registered');
     }
 
     disable() {

@@ -2,7 +2,7 @@
 # Install extension files and try to reload GNOME Shell.
 set -euo pipefail
 
-UUID="cursor-usage@local"
+UUID="cursor-usage@theDavidCoen.github.io"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 "${SCRIPT_DIR}/install.sh"
@@ -42,4 +42,4 @@ fi
 echo ""
 echo "Then verify:"
 echo "  gnome-extensions info ${UUID}"
-echo "Expect: Version/Versione: 5   State/Stato: ACTIVE"
+echo "Expect: Stato/State ACTIVE for cursor-usage@theDavidCoen.github.io"

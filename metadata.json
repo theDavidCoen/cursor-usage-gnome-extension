@@ -1,8 +1,7 @@
 {
-  "uuid": "cursor-usage@local",
+  "uuid": "cursor-usage@theDavidCoen.github.io",
   "name": "Cursor Usage",
-  "description": "Shows Cursor plan usage percentage in the top bar. Click for subscription, billing cycle, Usage and API details.",
-  "version": 5,
+  "description": "Shows Cursor IDE plan usage percentage in the GNOME top bar.\n\nClick the indicator for subscription type, billing cycle, Usage/API progress bars, and spend details.\n\n* Reads the local Cursor IDE session token at runtime from ~/.config/Cursor/User/globalStorage/state.vscdb (never ships credentials).\n* Fetches usage over HTTPS from Cursor's undocumented dashboard API (api2.cursor.sh).\n* Requires a logged-in Cursor IDE and the sqlite3 command-line tool.\n\nUnofficial extension; not affiliated with Anysphere or Cursor.",
   "shell-version": ["49", "50", "51"],
   "url": "https://github.com/theDavidCoen/cursor-usage-gnome-extension"
 }
